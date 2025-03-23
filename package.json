@@ -1,0 +1,11 @@
+{
+  "name": "mock-interview-system",
+  "version": "1.0.0",
+  "description": "An AI powered Mock interview platform for coding and job hunt",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anurag Poddar",
+  "license": "ISC"
+}
