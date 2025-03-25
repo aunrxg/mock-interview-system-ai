@@ -1,7 +1,7 @@
 import { ApiResponse } from "../utils/apiResponse";
 import { ApiError } from "../utils/apiError";
 import { asyncHandler } from "../utils/asyncHandler";
-import { User } from "models/user.model";
+import { User } from "../models/user.model";
 
 const registerUser = asyncHandler( async (req, res) => {
   // 1. get user details from frontend
@@ -23,7 +23,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
   // 4. create user object
   const user = await User.create({
-    username: username.toLowerCase(),
+    username: username ? username.toLowerCase() : "",
     email,
     password,
   });
