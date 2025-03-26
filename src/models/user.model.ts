@@ -1,18 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { env } from "../config/env";
-import { JwtPayload } from "jsonwebtoken";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload & { _id: string };
-    }
-  }
+export interface IUser extends Document {
+  username: string;
+  email: string;
+  password: string;
+  refreshToken?: string | null;
+  isPasswordCorrect(candidatePassword: string): Promise<boolean>;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
 }
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema<IUser>({
   username: {
     type: String,
     required: true,
@@ -54,7 +55,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.isPasswordCorrect = async function (password: string) {
+userSchema.methods.isPasswordCorrect = async function (password: string): Promise<boolean> {
   return await bcrypt.compare(password, this.password);
 }
 
@@ -71,7 +72,7 @@ userSchema.methods.generateAccessToken = function (): string {
   return jwt.sign(payload, env.ACCESS_TOKEN_SECRET, options)
 }
 
-userSchema.methods.generateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function (): string {
   const payload = {
     _id: this._id,
     email: this.email,
@@ -84,4 +85,4 @@ userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(payload, env.REFRESH_TOKEN_SECRET, options);
 }
 
-export const User = mongoose.model("User", userSchema);
+export const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
