@@ -18,8 +18,10 @@ app.use(cookieParser());
 
 //routes
 import userRouter from "./routes/user.routes";
+import jobRouter from "./routes/job.routes";
 
 //route declaration
-app.use("/api/v1/users", userRouter)
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/jobs", jobRouter);
 
 export { app }
