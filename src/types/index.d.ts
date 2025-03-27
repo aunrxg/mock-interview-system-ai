@@ -16,3 +16,12 @@ export interface DecodedToken {
   email: string;
   username: string;
 }
+
+export interface TestCaseSchema {
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  passed: boolean;
+  status: string;
+  error: string | null;
+}
