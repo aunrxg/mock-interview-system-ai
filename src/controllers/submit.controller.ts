@@ -11,7 +11,6 @@ const submitCode = asyncHandler(async(req, res) => {
   try {
     // 1. get the jobId, code and selected lang
     const { jobId, code, language } = req.body;
-    console.log("hello")
 
     // 2. verify that they exist and not empty
     if([jobId, code, language].some((field) => field?.trim() === "")) {
