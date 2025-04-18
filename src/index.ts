@@ -23,8 +23,8 @@ const seedJobs = async () => {
           "You can return the answer in any order."
         ],
         testCases: [
-          { input: "[2,7,11,15], target = 9", output: "[0,1]", explanation: "nums[0] + nums[1] = 2 + 7 = 9" },
-          { input: "[3,2,4], target = 6", output: "[1,2]", explanation: "nums[1] + nums[2] = 2 + 4 = 6" }
+          { input: "[2,7,11,15], target = 9", expectedOutput: "[0,1]", explanation: "nums[0] + nums[1] = 2 + 7 = 9" },
+          { input: "[3,2,4], target = 6", expectedOutput: "[1,2]", explanation: "nums[1] + nums[2] = 2 + 4 = 6" }
         ],
         tags: [ "Array", "Loops" ],
       }
@@ -41,8 +41,8 @@ const seedJobs = async () => {
           "You must do this by modifying the input array in-place."
         ],
         testCases: [
-          { input: '["h","e","l","l","o"]', output: '["o","l","l","e","h"]', explanation: "Reversed string." },
-          { input: '["H","a","n","n","a","h"]', output: '["h","a","n","n","a","H"]', explanation: "Reversed string." }
+          { input: '["h","e","l","l","o"]', expectedOutput: '["o","l","l","e","h"]', explanation: "Reversed string." },
+          { input: '["H","a","n","n","a","h"]', expectedOutput: '["h","a","n","n","a","H"]', explanation: "Reversed string." }
         ],
         tags: [ "Array", "String", "Loops" ],
       }
