@@ -32,7 +32,7 @@ const submitCode = asyncHandler(async(req, res) => {
     const testResult = await runCodeAgainstTestCases(code, language, testCases);
 
     // 5. send to ai
-    const aiFeedBack = await getAIReview(code, language, testResult);
+    // const aiFeedBack = await getAIReview(code, language, testResult);
 
     // 6. return response
     return res.status(200).json(
@@ -40,7 +40,7 @@ const submitCode = asyncHandler(async(req, res) => {
         200,
         {
           testResults: testResult,
-          aiFeedBack
+          // aiFeedBack
         },
         "Submission success"
       )

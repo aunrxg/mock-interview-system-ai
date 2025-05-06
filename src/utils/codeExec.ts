@@ -1,105 +1,110 @@
 import axios from "axios";
-import { TestCaseSchema } from "types";
-
 
 const languageMap: Record<string, number> = {
-  python: 71,
   javascript: 63,
+  python: 71,
   java: 62,
 };
 
+interface TestCase {
+  input: string;
+  expectedOutput: string;
+}
+
+interface TestCaseResult {
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  passed: boolean;
+  status: string;
+  error: string | null;
+}
 
 export const runCodeAgainstTestCases = async (
   code: string,
   language: string,
-  testCases: { input: string, expectedOutput: string }[]
-): Promise<TestCaseSchema[]> => {
-  try {
-    if(!languageMap[language]) {
-      throw new Error("Unsupported programming language");
-    }
+  testCases: TestCase[]
+): Promise<TestCaseResult[]> => {
+  const results: TestCaseResult[] = [];
 
-    const results = [];
-    console.log("Running code using judge0 api");
+  if (!languageMap[language]) {
+    throw new Error("Unsupported language");
+  }
 
-    for (const testCase of testCases) {
-      const { input, expectedOutput } = testCase;
-
-      const response = await axios.post(`${process.env.JUDGE0_API_URL}/submissions/?base64_encoded=false&wait=false`,
+  for (const { input, expectedOutput } of testCases) {
+    try {
+      // 1. Submit code to Judge0
+      const submitRes = await axios.post(
+        `${process.env.JUDGE0_API_URL}/submissions?base64_encoded=false&wait=false`,
         {
           source_code: code,
           language_id: languageMap[language],
           stdin: input,
-          expected_output: expectedOutput,
         },
         {
           headers: {
-            "X-RapidAPI-Key": process.env.JUDGE0_API_KEY,
-            "X-RapidAPI-Host": process.env.JUDGE0_API_HOST,
+            "X-RapidAPI-Key": process.env.JUDGE0_API_KEY!,
+            "X-RapidAPI-Host": process.env.JUDGE0_API_HOST!,
             "Content-Type": "application/json",
           },
         }
       );
 
-      const token = response.data.token;
-      console.log("Token from judge0: ", token);
+      const token = submitRes.data.token;
 
-      let executionResult = null;
-      let attempts = 0;
-      let maxAttempts = 10;
-
-      while(!executionResult && attempts < maxAttempts) {
-        try {
-          const result = await axios.get(`${process.env.JUDGE0_API_URL}/submissions/${token}?base64_encode=false`,
-            {
-              headers: {
-                "X-RapidAPI-Key": process.env.JUDGE0_API_KEY,
-                "X-RapidAPI-Host": process.env.JUDGE0_API_HOST,
-              },
-            });
-
-          if(result.data.status.id >= 3) {
-            executionResult = result.data;
-            console.log("Receiving result from judge0: ", executionResult);
-          } else {
-            console.log("Waiting for judge0 to complete processing...");
-            await new Promise((resolve) => setTimeout(resolve, 100));
+      // 2. Poll for result
+      let result = null;
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const pollRes = await axios.get(
+          `${process.env.JUDGE0_API_URL}/submissions/${token}?base64_encoded=false`,
+          {
+            headers: {
+              "X-RapidAPI-Key": process.env.JUDGE0_API_KEY!,
+              "X-RapidAPI-Host": process.env.JUDGE0_API_HOST!,
+            },
           }
-        } catch (error) {
-          console.error("Error while polling judge0: ", error);
+        );
+
+        if (pollRes.data.status.id >= 3) {
+          result = pollRes.data;
           break;
         }
 
-        attempts++;
+        await new Promise(res => setTimeout(res, 500)); // wait before retry
       }
-      console.log("Got the result from judge0");
-      
-      if (!executionResult) {
-        console.error("Failed to retrieve the result from Judge0 after multiple attempts.");
+
+      // 3. Push result
+      if (result) {
+        const actualOutput = result.stdout?.trim() || "";
+        results.push({
+          input,
+          expectedOutput,
+          actualOutput,
+          passed: actualOutput === expectedOutput,
+          status: result.status.description,
+          error: result.stderr || result.compile_output || null,
+        });
+      } else {
         results.push({
           input,
           expectedOutput,
           actualOutput: "",
           passed: false,
-          status: "Execution Timeout",
-          error: "Judge0 API did not respond with a completed status.",
+          status: "Timeout",
+          error: "Judge0 didn't respond in time",
         });
-        continue;
       }
-
+    } catch (error: any) {
       results.push({
         input,
         expectedOutput,
-        actualOutput: executionResult.stdout?.trim() || "" as string,
-        passed: executionResult.stdout?.trim() === expectedOutput as string,
-        status: executionResult.status.description as string,
-        error: (executionResult.stderr || executionResult.compile_output || null) as string | null,
+        actualOutput: "",
+        passed: false,
+        status: "Error",
+        error: error.message,
       });
     }
-
-    return results;
-  } catch (error: any) {
-    console.error("Excecution error: ", error);
-    return [];
   }
+
+  return results;
 };
