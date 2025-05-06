@@ -39,8 +39,8 @@ const QuestionSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ["easy", "medium", "hard"],
-      default: "medium",
+      enum: ["Easy", "Medium", "Hard"],
+      default: "Medium",
     },
     tags: [String],
   },
@@ -60,6 +60,15 @@ const JobSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+  },
+  location: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+  skills: {
+    type: [String],
   },
   question: {
     type: QuestionSchema,

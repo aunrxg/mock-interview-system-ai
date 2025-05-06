@@ -4,6 +4,9 @@ export const Jobs = [
       "title": "Frontend Engineer",
       "company": "Google",
       "description": "Design and implement responsive UI features for scalable web applications.",
+      "location": "San Francisco, CA",
+      "type": "Full-time",
+      "skills": ["React", "TypeScript", "CSS"], 
       "question": {
         "title": "Two Sum",
         "description": "Given an array of integers, return indices of the two numbers such that they add up to a specific target.",
@@ -23,7 +26,7 @@ export const Jobs = [
             "explanation": "2 + 4 = 6"
           }
         ],
-        "difficulty": "easy",
+        "difficulty": "Easy",
         "tags": ["Array", "Hash Table"]
       }
     },
@@ -32,6 +35,9 @@ export const Jobs = [
       "title": "Backend Developer",
       "company": "Amazon",
       "description": "Build scalable microservices and APIs to power backend logic for high traffic applications.",
+      "location": "New York, NY",
+      "type": "Full-time",
+      "skills": ["Node.js", "Python", "MongoDB"],
       "question": {
         "title": "Valid Parentheses",
         "description": "Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
@@ -50,7 +56,7 @@ export const Jobs = [
             "explanation": "Mismatched brackets."
           }
         ],
-        "difficulty": "easy",
+        "difficulty": "Easy",
         "tags": ["Stack", "String"]
       }
     },
@@ -59,6 +65,9 @@ export const Jobs = [
       "title": "Full Stack Developer",
       "company": "Microsoft",
       "description": "Work across the stack to build performant web applications and services.",
+      "location": "Remote",
+      "type": "Contract",
+      "skills": ["React", "Node.js", "PostgreSQL"],
       "question": {
         "title": "Longest Substring Without Repeating Characters",
         "description": "Given a string, find the length of the longest substring without repeating characters.",
@@ -78,15 +87,18 @@ export const Jobs = [
             "explanation": "The answer is 'b', with the length of 1."
           }
         ],
-        "difficulty": "medium",
+        "difficulty": "Medium",
         "tags": ["Hash Table", "Sliding Window", "String"]
       }
     },
     {
       "id": "job4",
-      "title": "Data Engineer",
+      "title": "DevOps Engineer",
       "company": "Netflix",
       "description": "Design and maintain ETL pipelines and ensure high performance of data flow systems.",
+      "location": "Seattle, WA",
+      "type": "Full-time",
+      "skills": ["AWS", "Docker", "Kubernetes"], 
       "question": {
         "title": "Top K Frequent Elements",
         "description": "Given a non-empty array of integers, return the k most frequent elements.",
@@ -105,7 +117,7 @@ export const Jobs = [
             "explanation": "Only one element exists."
           }
         ],
-        "difficulty": "medium",
+        "difficulty": "Medium",
         "tags": ["Heap", "Hash Table", "Sorting"]
       }
     },
@@ -114,6 +126,9 @@ export const Jobs = [
       "title": "Machine Learning Engineer",
       "company": "OpenAI",
       "description": "Research and deploy machine learning algorithms into production AI systems.",
+      "location": "Austin, TX",
+      "type": "Full-time",
+      "skills": ["Python", "TensorFlow", "SQL"], 
       "question": {
         "title": "Median of Two Sorted Arrays",
         "description": "Given two sorted arrays nums1 and nums2, return the median of the two sorted arrays.",
@@ -132,7 +147,7 @@ export const Jobs = [
             "explanation": "Merged array is [1, 2, 3, 4]. Median is (2 + 3) / 2 = 2.5."
           }
         ],
-        "difficulty": "hard",
+        "difficulty": "Hard",
         "tags": ["Binary Search", "Array", "Divide and Conquer"]
       }
     }
