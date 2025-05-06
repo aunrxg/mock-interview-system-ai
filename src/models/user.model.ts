@@ -5,6 +5,9 @@ import { env } from "../config/env";
 import { IUser } from "../types";
 
 const userSchema = new mongoose.Schema<IUser>({
+  fullName: {
+    type: String,
+  },
   username: {
     type: String,
     required: true,
