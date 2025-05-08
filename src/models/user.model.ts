@@ -7,6 +7,7 @@ import { IUser } from "../types";
 const userSchema = new mongoose.Schema<IUser>({
   fullName: {
     type: String,
+    required: true,
   },
   username: {
     type: String,
@@ -27,6 +28,10 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: [true, "Password is Required"],
     minlength: 8,
+  },
+  jobs: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Job',
   },
   // fullName: {},
   // avatar: {},

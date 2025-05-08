@@ -1,6 +1,6 @@
-# GeekCodes Backend
+# GeekCodesAI Backend
 
-GeekCodes is an AI-powered mock interview platform tailored for developers. It offers job listings and interactive coding assessments with instant feedback to help users prepare for tech interviews.
+GeekCodesAI is an AI-powered mock interview platform tailored for developers. It offers job listings and interactive coding assessments with instant feedback to help users prepare for tech interviews.
 
 ## 🚀 Features
 

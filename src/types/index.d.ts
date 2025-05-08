@@ -7,6 +7,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   refreshToken?: string | null;
+  jobs: Types.ObjectId;
   isPasswordCorrect(candidatePassword: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;

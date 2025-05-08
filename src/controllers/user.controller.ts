@@ -5,6 +5,7 @@ import { User } from "../models/user.model";
 import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "types";
+import { Job } from "../models/job.model";
 
 const generateAccessAndRefreshTokens= async (userId: Types.ObjectId) => {
   try {
@@ -28,11 +29,11 @@ const generateAccessAndRefreshTokens= async (userId: Types.ObjectId) => {
 
 const registerUser = asyncHandler( async (req, res) => {
   // 1. get user details from frontend
-  const { email, username, password } = req.body;
+  const { fullName, email, username, password } = req.body;
 
   // 2. validation
   if(
-    [email, username, password].some((field) => field?.trim() === "")
+    [fullName, email, username, password].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "Fields are required");
   }
@@ -47,6 +48,7 @@ const registerUser = asyncHandler( async (req, res) => {
   // 4. create user object
   const user = await User.create({
     username: username ? username.toLowerCase() : "",
+    fullName,
     email,
     password,
   });
@@ -190,4 +192,34 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     )
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, getCurrentUser };
+const saveJob = asyncHandler(async (req, res) => {
+  const { jobId, userId } = req.body
+
+  if(!jobId || !userId) {
+    throw new ApiError(400, "fields are required.")
+  }
+
+  const job = await Job.findById(jobId);
+  if(!job) {
+    throw new ApiError(404, "Job not found.");
+  }
+
+  const user = await User.findById(userId);
+  if(!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    { jobs: job },
+    { new: true },
+  );
+
+  if(!updatedUser) {
+    throw new ApiError(500, "server ERror")
+  }
+
+  return res.status(200).json(new ApiResponse(200, updatedUser, "Job added"))
+});
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, getCurrentUser, saveJob };
