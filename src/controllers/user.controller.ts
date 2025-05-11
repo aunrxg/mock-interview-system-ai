@@ -209,11 +209,22 @@ const saveJob = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
+  const isAlreadySaved = user.jobs.some((savedJob) => savedJob.job.toString() === jobId)
+  if(isAlreadySaved) {
+    throw new ApiError(400, "Job is already saved")
+  }
+
   const updatedUser = await User.findOneAndUpdate(
     { _id: userId },
-    { jobs: job },
+    { $addToSet: { 
+      jobs: {
+        job: jobId,
+        savedAt: new Date()
+      }
+     } },
     { new: true },
   );
+  // console.log("Type of JOBS field in user:", typeof(updatedUser?.jobs))
 
   if(!updatedUser) {
     throw new ApiError(500, "server ERror")

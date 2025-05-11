@@ -1,5 +1,10 @@
 import { Types } from "mongoose";
 
+interface savedJob {
+  job: mongoose.Type.ObjectId;
+  savedAt: Date;
+}
+
 export interface IUser extends Document {
   _id: Types.ObjectId;
   username: string;
@@ -7,7 +12,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   refreshToken?: string | null;
-  jobs: Types.ObjectId;
+  jobs: savedJob[];
   isPasswordCorrect(candidatePassword: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;

@@ -29,12 +29,12 @@ const userSchema = new mongoose.Schema<IUser>({
     required: [true, "Password is Required"],
     minlength: 8,
   },
-  jobs: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Job',
-  },
+  jobs: [{
+    job: { type: mongoose.Schema.Types.ObjectId, ref: 'Job' },
+    savedAt: { type: Date, default: Date.now }
+  }],
   // fullName: {},
-  // avatar: {},
+  // avatar: {},minlength: 8,
   refreshToken: {
     type: String,
   },
