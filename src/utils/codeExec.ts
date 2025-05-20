@@ -17,14 +17,24 @@ interface TestCaseResult {
   actualOutput: string;
   passed: boolean;
   status: string;
+  time: string;
+  space: string;
   error: string | null;
+}
+
+interface RunCodeResponse {
+  allPassed: boolean;
+  totalTime: string;
+  maxMemory: string;
+  // errors: string[];
+  results: TestCaseResult[];
 }
 
 export const runCodeAgainstTestCases = async (
   code: string,
   language: string,
   testCases: TestCase[]
-): Promise<TestCaseResult[]> => {
+): Promise<RunCodeResponse> => {
   const results: TestCaseResult[] = [];
 
   if (!languageMap[language]) {
@@ -39,7 +49,6 @@ export const runCodeAgainstTestCases = async (
         {
           source_code: code,
           language_id: languageMap[language],
-          stdin: input,
         },
         {
           headers: {
@@ -82,6 +91,8 @@ export const runCodeAgainstTestCases = async (
           actualOutput,
           passed: actualOutput === expectedOutput,
           status: result.status.description,
+          time: result.time || "NA",
+          space: result.memory ? `${result.memory} KB` : "NA",  
           error: result.stderr || result.compile_output || null,
         });
       } else {
@@ -91,6 +102,8 @@ export const runCodeAgainstTestCases = async (
           actualOutput: "",
           passed: false,
           status: "Timeout",
+          time: "NA",
+          space: "NA",
           error: "Judge0 didn't respond in time",
         });
       }
@@ -101,10 +114,37 @@ export const runCodeAgainstTestCases = async (
         actualOutput: "",
         passed: false,
         status: "Error",
+        time: "NA",
+        space: "NA",
         error: error.message,
       });
     }
   }
 
-  return results;
+  const totalTime = results.reduce((sum, r) => {
+    const timeNum = parseFloat(r.time || '0');
+    return sum + (isNaN(timeNum) ? 0 : timeNum);
+  }, 0).toFixed(3) + 's';
+
+  const maxMemory = results.reduce((max, r) => {
+    const mem = parseInt(r.space || '0');
+    return Math.max(max, isNaN(mem) ? 0 : mem);
+  }, 0) + 'KB';
+
+  // const errors = results
+  //   .filter(r => r.error)
+  //   .map(r => r.error as string);
+  // const error = ""
+
+  // if(!errors.length && results.every(r => r.passed)) {
+  //   errors.push('❌ Wrong Answer')
+  // }
+
+  return {
+    allPassed: results.every(r => r.passed),
+    totalTime,
+    maxMemory,
+    // errors,
+    results,
+  };
 };
