@@ -38,16 +38,13 @@ const submitCode = asyncHandler(async(req, res) => {
     // const aiFeedBack = await getAIReview(code, language, testResult);
 
     //5.5 make db entry
-    const { allPassed, totalTime, maxMemory } = testResult;
 
     const makeSub = await Attempt.create({
-      userId,
-      jobId,
-      language,
-      code,
-      status: allPassed,
-      time: totalTime,
-      space: maxMemory,
+      userId: userId,
+      jobId: jobId,
+      language: language,
+      code: code,
+      judgeResult: testResult,
     });
 
     const createdSub = await Attempt.findById(makeSub._id)
