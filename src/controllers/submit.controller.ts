@@ -67,7 +67,7 @@ const submitCode = asyncHandler(async(req, res) => {
   }
 });
 
-const getSubmissions = asyncHandler(async (req, res) => {
+const getAllSubmissions = asyncHandler(async (req, res) => {
 
   // get userId, and problemId 
   const userId = req.user?._id;
@@ -99,6 +99,27 @@ const getSubmissions = asyncHandler(async (req, res) => {
   );
 });
 
+const getSubmisson = asyncHandler(async (req, res) => {
+
+  const { id } = req.params;
+  if(!id) {
+    throw new ApiError(400, "Id is rquired");
+  }
+
+  const submission = await Attempt.findById(id);
+  if(!submission) {
+    throw new ApiError(404, "Submission not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      { submission },
+      "submission fetch successfuly"
+    )
+  );
+});
 
 
-export { submitCode, getSubmissions };
+
+export { submitCode, getAllSubmissions, getSubmisson };
