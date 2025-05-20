@@ -32,3 +32,38 @@ export interface TestCaseSchema {
   status: string;
   error: string | null;
 }
+
+
+export interface TestCase {
+  input: string;
+  expectedOutput: string;
+}
+
+export interface TestCaseResult {
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  passed: boolean;
+  status: string;
+  time: string;
+  space: string;
+  error: string | null;
+}
+
+export interface RunCodeResponse {
+  allPassed: boolean;
+  totalTime: string;
+  maxMemory: string;
+  // errors: string[];
+  results: TestCaseResult[];
+}
+
+export interface IAttempt extends Document {
+  userId: Types.ObjectId;
+  jobId: Types.ObjectId;
+  language: string;
+  code: string;
+  aiFeedback?: string;
+  submittedAt: Date;
+  judgeResult?:RunCodeResponse;
+}

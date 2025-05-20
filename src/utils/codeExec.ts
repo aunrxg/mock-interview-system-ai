@@ -1,34 +1,11 @@
 import axios from "axios";
+import { TestCase, TestCaseResult, RunCodeResponse } from "types";
 
 const languageMap: Record<string, number> = {
   javascript: 63,
   python: 71,
   java: 62,
 };
-
-interface TestCase {
-  input: string;
-  expectedOutput: string;
-}
-
-interface TestCaseResult {
-  input: string;
-  expectedOutput: string;
-  actualOutput: string;
-  passed: boolean;
-  status: string;
-  time: string;
-  space: string;
-  error: string | null;
-}
-
-interface RunCodeResponse {
-  allPassed: boolean;
-  totalTime: string;
-  maxMemory: string;
-  // errors: string[];
-  results: TestCaseResult[];
-}
 
 export const runCodeAgainstTestCases = async (
   code: string,
