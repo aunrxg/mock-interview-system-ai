@@ -20,6 +20,21 @@ const attemptSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // stdout: {
+  //   type: String,
+  // },
+  // stderror: {
+  //   type: [String],
+  // },
+  status: {
+    type: Boolean,
+  },
+  time: {
+    type: String,
+  }, 
+  space: {
+    type: String,
+  },
   aiFeedback: {
     type: String,
   },
