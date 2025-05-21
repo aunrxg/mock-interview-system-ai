@@ -1,43 +1,48 @@
-import OpenAI from "openai";
-import { TestCaseSchema } from "types";
+import { GoogleGenAI } from "@google/genai";
+import { ReviewInput } from "types";
 
-const opneai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
-export const getAIReview = async(
-  code: string,
-  language: string,
-  testResult: TestCaseSchema[]
-) => {
-  try {
-    const prompt = `
-    You are an AI coding assistant. The user submitted the following code:
+export async function AiReview({ questionTitle, questionDescription, code, language  }: ReviewInput): Promise<string> {
 
-    Language: ${language}
-    Code:
-    \`\`\`${language}
+  const prompt = `
+    You are a senior software engineer and technical interviewer reviewing a candidate's coding solution.
+
+    ### Problem Description
+    ${questionTitle}: 
+    ${questionDescription}
+
+    ### Candidate's submission (in ${language})
     ${code}
-    \`\`\`
 
-    The code was tested against the following test cases:
+    ### Instructions: 
+    Please provide a detailed review including: 
+    1. **Correction**: Are there any logical errors or bugs? Mention edge cases it may fail.
+    2. **Time & Space Complexity**: Estimate and comment on efficiency.
+    3. **Code Style & Readability**: How readable and maintainable is the code?
+    4. **Suggestions for Improvement**: Any changes to improve logic, structure, or performance.
+    5. **Alternative Better Solution**: If applicable, provide a cleaner or more efficient solution.
+    6. **Explanation**: Explain why your suggested solution is better.
 
-    ${testResult.map((t, i) => `Test ${i+1}: Input: ${t.input}, Expected: ${t.expectedOutput}, Got: ${t.actualOutput}, Passed: ${t.passed}`).join("\n")}
+    Make sure the feedback is constructive, technical and help the candidate learn.
 
-    1. Provide a review of the submitted code.
-    2. Suggest improvement if necessary.
-    3. If a more optimal solution exist, suggest an improvement solution with an explanation.
-    `;
+    Begin your review below: 
+  `;
 
 
-    const response = await opneai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "system", content: "You are an expert programming mentor." }, { role: "user", content: prompt }],
-    });
-
-    return response.choices[0].message.content;
+  try {
+    const response = await ai.models.generateContent({ 
+      model: "gemini-2.0-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+     });
+     return response.text || "AI review could not be generated. Please try again later.";
   } catch (error) {
-    console.error("AI FeedBack Error: ", error);
-    return "AI feedback could not be generated.";
+    console.error("AI review failed: ", error);
+    return "We couldn't fetch the ai review at this time. Please try again later.";
   }
-};
+}
