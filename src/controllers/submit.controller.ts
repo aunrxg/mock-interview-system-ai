@@ -2,7 +2,7 @@ import { ApiError } from "../utils/apiError";
 import { asyncHandler } from "../utils/asyncHandler";
 import { Job } from "../models/job.model";
 import { runCodeAgainstTestCases } from "../utils/codeExec";
-import { getAIReview } from "../utils/aiService";
+import { AiReview } from "../utils/aiService";
 import { ApiResponse } from "../utils/apiResponse";
 import { User } from "../models/user.model";
 import { Attempt } from "../models/attempt.model";
@@ -120,6 +120,52 @@ const getSubmisson = asyncHandler(async (req, res) => {
   );
 });
 
+const getAiReview = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    if(!id) {
+      throw new ApiError(400, "ID is required.");
+    }
+  
+    const submission = await Attempt.findById(id);
+    if(!submission) {
+      throw new ApiError(404, "Submission not found.");
+    }
+  
+    const { jobId, code, language } = submission;
+    const job = await Job.findById(jobId);
+    if(!job) {
+      throw new ApiError(404, "Couldn't fetch question.");
+    }
+    const { title, description } = job.question;
+  
+    if(submission.aiFeedback) {
+      return res.status(200).json(
+        new ApiResponse(
+          200,
+          submission.aiFeedback,
+          "Review Already exist"
+        )
+      )
+    }
+    const review = await AiReview({ questionTitle: title, questionDescription: description, code, language });
+
+    submission.aiFeedback = review;
+    await submission.save();
+  
+    return res.status(201).json(
+      new ApiResponse(
+        201,
+        review,
+        "review received succefully"
+      )
+    )
+  } catch (error) {
+    console.error("Error in getAiReview: ", error);
+    throw new ApiError(500, "Internal server errror.");
+  }
+});
 
 
-export { submitCode, getAllSubmissions, getSubmisson };
+
+export { submitCode, getAllSubmissions, getSubmisson, getAiReview };

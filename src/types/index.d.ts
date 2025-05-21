@@ -67,3 +67,10 @@ export interface IAttempt extends Document {
   submittedAt: Date;
   judgeResult?:RunCodeResponse;
 }
+
+export interface ReviewInput {
+  questionTitle: string;
+  questionDescription: string;
+  code: string;
+  language: string;
+}
