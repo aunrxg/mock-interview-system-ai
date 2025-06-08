@@ -1,12 +1,10 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import connectDB from "./db";
 import { app } from "./app";
 import { Job } from "./models/job.model";
 import { Jobs } from "./utils/SeedJobs";
-
-dotenv.config({
-  path: "./env",
-})
 
 const seedJobs = async () => {
 
