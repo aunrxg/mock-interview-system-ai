@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IAttempt } from "types";
+import { IAttempt } from "my-types";
 
 const attemptSchema = new mongoose.Schema<IAttempt>({
   userId: {

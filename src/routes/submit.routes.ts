@@ -1,10 +1,10 @@
 import { verifyJWT } from "../middlewares/auth.middleware";
 import { getAiReview, getAllSubmissions, getSubmisson, submitCode } from "../controllers/submit.controller";
-import { Router } from "express";
+import { Request, Router, Response } from "express";
 
 const submitRouter = Router();
 
-submitRouter.route("/").get((req, res) => {
+submitRouter.route("/").get((req: Request, res: Response ) => {
   res.send("Api is working");
 });
 submitRouter.route("/").post(verifyJWT, submitCode);

@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/apiError";
 import { ApiResponse } from "../utils/apiResponse";
 import { Job } from "../models/job.model";
+import { Request, Response } from "express";
 
 const getAllJobs = asyncHandler(async(_, res) => {
   // this is a get request so we don't need to get anything from the user, but we will check if the user is authorized
@@ -18,7 +19,7 @@ const getAllJobs = asyncHandler(async(_, res) => {
   );
 });
 
-const getJobById = asyncHandler(async(req, res) => {
+const getJobById = asyncHandler(async(req: Request, res: Response) => {
   // with this endpoint we will fetch the single job using its id
   // 1. get the id from the body or params
   const { id } = req.params

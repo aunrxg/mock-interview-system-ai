@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { ReviewInput } from "types";
+import { ReviewInput } from "my-types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 

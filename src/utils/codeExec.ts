@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TestCase, TestCaseResult, RunCodeResponse } from "types";
+import { TestCase, TestCaseResult, RunCodeResponse } from "my-types";
 
 const languageMap: Record<string, number> = {
   javascript: 63,

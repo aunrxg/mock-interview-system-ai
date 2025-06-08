@@ -4,8 +4,9 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { User } from "../models/user.model";
 import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
-import { DecodedToken } from "types";
+import { DecodedToken, IUserJob } from "my-types";
 import { Job } from "../models/job.model";
+import { Request, Response } from "express";
 
 const generateAccessAndRefreshTokens= async (userId: Types.ObjectId) => {
   try {
@@ -27,7 +28,7 @@ const generateAccessAndRefreshTokens= async (userId: Types.ObjectId) => {
   }
 }
 
-const registerUser = asyncHandler( async (req, res) => {
+const registerUser = asyncHandler( async (req: Request, res: Response) => {
   // 1. get user details from frontend
   const { fullName, email, username, password } = req.body;
 
@@ -65,7 +66,7 @@ const registerUser = asyncHandler( async (req, res) => {
   );
 });
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req: Request, res: Response) => {
   // req body data
   const { email, username, password } = req.body;
 
@@ -209,7 +210,7 @@ const saveJob = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
-  const isAlreadySaved = user.jobs.some((savedJob) => savedJob.job.toString() === jobId)
+  const isAlreadySaved = user.jobs.some((savedJob: IUserJob) => savedJob.job.toString() === jobId)
   if(isAlreadySaved) {
     throw new ApiError(400, "Job is already saved")
   }

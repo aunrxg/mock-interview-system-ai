@@ -1,8 +1,9 @@
-import mongoose, { Document, Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
+// import HookNextFunction from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { env } from "../config/env";
-import { IUser } from "../types";
+import { IUser } from "../my-types";
 
 const userSchema = new mongoose.Schema<IUser>({
   fullName: {
@@ -43,7 +44,7 @@ const userSchema = new mongoose.Schema<IUser>({
 });
 
 
-userSchema.pre("save", async function (next) {
+userSchema.pre<IUser>("save", async function (next) {
 
   if(!this.isModified("password")) {
     return next();

@@ -13,6 +13,7 @@ export interface IUser extends Document {
   password: string;
   refreshToken?: string | null;
   jobs: savedJob[];
+  isModified(path: string): boolean;
   isPasswordCorrect(candidatePassword: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -73,4 +74,9 @@ export interface ReviewInput {
   questionDescription: string;
   code: string;
   language: string;
+}
+
+export interface IUserJob {
+  job: mongoose.Types.ObjectId;
+  savedAt: Date;
 }
