@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { DecodedToken, IUserJob } from "my-types";
 import { Job } from "../models/job.model";
 import { Request, Response } from "express";
+import { CookieOptions } from "express";
 
 const generateAccessAndRefreshTokens= async (userId: Types.ObjectId) => {
   try {
@@ -93,9 +94,10 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
   // send cookies
-  const options = {
+  const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   }
 
   return res
@@ -128,9 +130,10 @@ const logoutUser = asyncHandler(async(req, res) => {
     }
   );
 
-  const options = {
+  const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   }
 
   return res.status(200)
@@ -164,9 +167,10 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
-  const options = {
+  const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   }
 
   return res.status(200)
