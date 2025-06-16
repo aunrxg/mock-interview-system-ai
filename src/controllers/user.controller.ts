@@ -61,8 +61,23 @@ const registerUser = asyncHandler( async (req: Request, res: Response) => {
   // 6. check if the user is created
   if(!createdUser) throw new ApiError(500, "Something went wrong while registering user.");
 
+  // access and ref token
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id as Types.ObjectId);
+
+  // send cookies
+  const options: CookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
+  }
   // 7. return the res
-  return res.status(201).json(
+  return res
+    .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
     new ApiResponse(200, createdUser, "User registered successfully.")
   );
 });
@@ -98,6 +113,8 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
   }
 
   return res
@@ -134,6 +151,8 @@ const logoutUser = asyncHandler(async(req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
   }
 
   return res.status(200)
@@ -171,6 +190,8 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
   }
 
   return res.status(200)
