@@ -8,6 +8,30 @@ import { User } from "../models/user.model";
 import { Attempt } from "../models/attempt.model";
 
 
+const runCode = asyncHandler(async(req, res) => {
+  try {
+    const { code, language, testCases } = req.body;
+
+    if([code, language].some((field) => field?.trim() === "")) {
+      throw new ApiError(400, "Fields are required.");
+    }
+    if(!testCases) throw new ApiError(400, "TestCases are required.")
+
+    const testResult = await runCodeAgainstTestCases(code, language, testCases);
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { testResult: testResult },
+        "Run test cases successfuly"
+      )
+    )
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Something went wrong while running test cases." })
+  }
+})
+
 const submitCode = asyncHandler(async(req, res) => {
   // this will submit the code from user, a post request
   try {
@@ -168,4 +192,4 @@ const getAiReview = asyncHandler(async (req, res) => {
 
 
 
-export { submitCode, getAllSubmissions, getSubmisson, getAiReview };
+export { runCode, submitCode, getAllSubmissions, getSubmisson, getAiReview };
